@@ -99,3 +99,13 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# intellij idea
+.idea
+*.iml
+
+# buildout
+bin/buildout
+
+# generated
+README.html

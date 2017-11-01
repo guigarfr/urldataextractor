@@ -1,0 +1,25 @@
+[run]
+branch = True
+include = ./urldataextractor/*
+omit =
+    */bin/*
+    */build/*
+    */develop-eggs/*
+    */dist/*
+    */docs/*
+    */eggs/*
+    */parts/*
+    */tests/*
+    .cache/*
+    __pycache__/*
+    .*/*
+    *.egg-info
+
+[report]
+include = ./urldataextractor/*
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise NotImplementedError

@@ -1,0 +1,19 @@
+[flake8]
+count = True
+exclude =
+    .idea
+    .tox
+    .git
+    .cache
+    .eggs
+    eggs
+    bin
+    build
+    develop-eggs
+    dist
+    docs
+    parts
+    *.egg-info
+    __pycache__
+ignore = F405, H306
+max-line-length = 100
