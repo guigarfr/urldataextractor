@@ -1,4 +1,4 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 """
    Copyright 2017 Guillermo García
 
@@ -17,21 +17,22 @@
 from __future__ import unicode_literals
 
 
-class ExtractionError(Exception):
-    """Error during the data extraction. Applies to `SimpleExtractor`."""
+class TestObjectBase(object):
 
+    init_object_on_setup = False
+    object = None
+    object_class = None
 
-class RequiredParameterError(Exception):
-    """Called a method without a required parameter."""
+    def setUp(self):
+        super(TestObjectBase, self).setUp()
+        if self.init_object_on_setup:
+            self.object = self.get_test_object()
 
+    def get_test_object(self, *args, **kwargs):
+        test_object_class = self.get_test_object_class()
+        return test_object_class(*args, **kwargs)
 
-class UrlDataExtractorException(Exception):
-    """Generic url data extractor exception."""
-
-
-class ValidationError(Exception):
-    """Validation error."""
-
-    def __init__(self, value, *args, **kwargs):
-        self.value = value
-        super(ValidationError, self).__init__(*args, **kwargs)
+    def get_test_object_class(self):
+        if self.object_class is None:
+            raise NotImplementedError()
+        return self.object_class

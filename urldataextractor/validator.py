@@ -17,21 +17,15 @@
 from __future__ import unicode_literals
 
 
-class ExtractionError(Exception):
-    """Error during the data extraction. Applies to `SimpleExtractor`."""
+class Validator(object):  # pylint: disable=too-few-public-methods
+    """Validates data.
 
+    Should raise Validation error if provided value is not valid.
+    """
 
-class RequiredParameterError(Exception):
-    """Called a method without a required parameter."""
+    def validate(self, value):  # pylint: disable=C0321
+        """Validates provided value.
 
-
-class UrlDataExtractorException(Exception):
-    """Generic url data extractor exception."""
-
-
-class ValidationError(Exception):
-    """Validation error."""
-
-    def __init__(self, value, *args, **kwargs):
-        self.value = value
-        super(ValidationError, self).__init__(*args, **kwargs)
+        This is the main method of a validator.
+        """
+        raise NotImplementedError()

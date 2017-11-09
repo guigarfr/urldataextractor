@@ -16,22 +16,12 @@
 """
 from __future__ import unicode_literals
 
-
-class ExtractionError(Exception):
-    """Error during the data extraction. Applies to `SimpleExtractor`."""
+from urldataextractor import exceptions
 
 
-class RequiredParameterError(Exception):
-    """Called a method without a required parameter."""
+class NoSchemeValidationError(exceptions.ValidationError):
+    """Url has no scheme."""
 
 
-class UrlDataExtractorException(Exception):
-    """Generic url data extractor exception."""
-
-
-class ValidationError(Exception):
-    """Validation error."""
-
-    def __init__(self, value, *args, **kwargs):
-        self.value = value
-        super(ValidationError, self).__init__(*args, **kwargs)
+class UrlValidationError(exceptions.ValidationError):
+    """Not a valid url."""
