@@ -18,12 +18,8 @@ from __future__ import unicode_literals
 import collections
 
 
-class Data(object):
-    """Represents extracted data.
-
-    holds all information extracted from a page.
-
-    Data can be transformed and validated
+class Data(collections.defaultdict):
+    """Stores data with associated keys.
 
     It is a collection of keys and values.
     Each key can have multiple values assigned.
@@ -31,51 +27,71 @@ class Data(object):
     It is an iterator.
     """
     def __init__(self):
-        self.__values = collections.defaultdict(list)
-        self.__errors = collections.defaultdict(list)
+        super(Data, self).__init__(list)
 
-    def __iter__(self):
-        return self.__values.__iter__()
-
-    def __next__(self):
-        return self.__values.items()
-
-    @property
-    def errors(self):
-        """Iterates over data items.
-
-        Data items are tuples formed by a key and list of values.
-        """
-        return self.__errors.items()
+    def __iter__(self, *args, **kwargs):
+        """ Iterates over data items. """
+        for key, list_of_values in self.items:
+            for value in list_of_values:
+                yield key, value
 
     @property
     def items(self):
-        """Iterates over data items.
-
-        Data items are tuples formed by a key and list of values.
-        """
-        return self.__values.items()
+        """Returns an iterator over all pairs of (key, list of values)."""
+        return super(Data, self).items()
 
     @property
     def keys(self):
-        """Iterates over data keys."""
-        return self.__values.keys()
+        """Returns an iterator over all keys."""
+        return super(Data, self).keys()
 
     @property
     def values(self):
-        """Iterates over data values."""
-        for list_of_values in self.__values.values():
-            for value in list_of_values:
+        """Returns an iterator over all single values."""
+        for value_list in super(Data, self).values():
+            for value in value_list:
                 yield value
 
     def add(self, key, value):
-        """Assigns a new data value to the provided key."""
-        self.__values[key].append(value)
+        """Assigns a new value to the provided key."""
+        self[key].append(value)
+
+
+class ExtractedData(object):
+    """Represents extracted data.
+
+    holds all information extracted from a page.
+
+    Data can be transformed and validated
+
+    Data which could not be transformed or validated
+    will be stored as errors.
+
+    It is an iterator.
+    """
+    def __init__(self):
+        self.__values = Data()
+        self.__errors = Data()
+
+    @property
+    def data(self):
+        """Valid data."""
+        return self.__values
+
+    @property
+    def errors(self):
+        """Errors data."""
+        return self.__errors
 
     def add_error(self, key, value):
         """Assigns a new data value to the provided key."""
-        self.__errors[key].append(value)
+        self.__errors.add(key, value)
 
-    def get(self, key):
-        """Obtains all data values assigned to the provided key."""
-        return self.__values[key]
+    def add_value(self, key, value):
+        """Assigns a new data error to the provided key."""
+        self.__values.add(key, value)
+
+    def clear(self):
+        """Clears all extracted data."""
+        self.__values.clear()
+        self.__errors.clear()

@@ -26,35 +26,79 @@ class DataClassTests(case.TestCase):
         super(DataClassTests, self).setUp()
 
     def test_init(self):
-        data_object = urldataextractor.Data()
+        data_object = urldataextractor.ExtractedData()
 
-        self.assertTrue(data_object.items.__iter__)
-        self.assertListEqual(list(data_object.items), [])
+        self.assertTrue(data_object.data.items.__iter__)
+        self.assertListEqual(list(data_object.data.items), [])
 
-        self.assertTrue(data_object.keys.__iter__)
-        self.assertListEqual(list(data_object.keys), [])
+        self.assertTrue(data_object.data.keys.__iter__)
+        self.assertListEqual(list(data_object.data.keys), [])
 
-        self.assertTrue(data_object.values.__iter__)
-        self.assertListEqual(list(data_object.values), [])
-
-        self.assertTrue(data_object.__iter__)
-        self.assertSetEqual(set(data_object), set())
+        self.assertTrue(data_object.data.__iter__)
+        self.assertListEqual(list(data_object.data), [])
 
     def test_add(self):
-        data_object = urldataextractor.Data()
-        data_object.add('foo', 'bar')
-        self.assertListEqual(list(data_object.items), [('foo', ['bar'])])
-        self.assertListEqual(list(data_object.keys), ['foo'])
-        self.assertListEqual(list(data_object.values), ['bar'])
+        data_object = urldataextractor.ExtractedData()
+        data_object.add_value('foo', 'bar')
 
-    def test_add__multiple(self):
-        data_object = urldataextractor.Data()
-        data_object.add('foo', 'bar')
-        data_object.add('foo', 2)
-        data_object.add('bar', {})
+        self.assertListEqual(list(data_object.data.items), [('foo', ['bar'])])
+        self.assertListEqual(list(data_object.data.keys), ['foo'])
+        self.assertListEqual(list(data_object.data.values), ['bar'])
+        self.assertListEqual(list(data_object.data), [('foo', 'bar')])
+
+        self.assertListEqual(list(data_object.errors.items), [])
+        self.assertListEqual(list(data_object.errors.keys), [])
+        self.assertListEqual(list(data_object.errors.values), [])
+        self.assertListEqual(list(data_object.errors), list(data_object.errors.values))
+
+    def test_add_value__multiple(self):
+        data_object = urldataextractor.ExtractedData()
+        data_object.add_value('foo', 'bar')
+        data_object.add_value('foo', 2)
+        data_object.add_value('bar', {})
+
         self.assertListEqual(
-            list(data_object.items),
+            list(data_object.data.items),
             [('foo', ['bar', 2]), ('bar', [{}])],
         )
-        self.assertListEqual(list(data_object.keys), ['foo', 'bar'])
-        self.assertListEqual(list(data_object.values), ['bar', 2, {}])
+        self.assertListEqual(list(data_object.data.keys), ['foo', 'bar'])
+        self.assertListEqual(list(data_object.data.values), ['bar', 2, {}])
+        self.assertListEqual(list(data_object.data), [('foo', 'bar'), ('foo', 2), ('bar', {})])
+
+        self.assertListEqual(list(data_object.errors.items), [])
+        self.assertListEqual(list(data_object.errors.keys), [])
+        self.assertListEqual(list(data_object.errors.values), [])
+        self.assertListEqual(list(data_object.errors), [])
+
+    def test_add_error(self):
+        data_object = urldataextractor.ExtractedData()
+        data_object.add_error('foo', 'bar')
+
+        self.assertListEqual(list(data_object.data.items), [])
+        self.assertListEqual(list(data_object.data.keys), [])
+        self.assertListEqual(list(data_object.data.values), [])
+        self.assertListEqual(list(data_object.data), [])
+
+        self.assertListEqual(list(data_object.errors.items), [('foo', ['bar'])])
+        self.assertListEqual(list(data_object.errors.keys), ['foo'])
+        self.assertListEqual(list(data_object.errors.values), ['bar'])
+        self.assertListEqual(list(data_object.errors), [('foo', 'bar')])
+
+    def test_add_error__multiple(self):
+        data_object = urldataextractor.ExtractedData()
+        data_object.add_error('foo', 'bar')
+        data_object.add_error('foo', 2)
+        data_object.add_error('bar', {})
+
+        self.assertListEqual(list(data_object.data.items), [])
+        self.assertListEqual(list(data_object.data.keys), [])
+        self.assertListEqual(list(data_object.data.values), [])
+        self.assertListEqual(list(data_object.data), [])
+
+        self.assertListEqual(
+            list(data_object.errors.items),
+            [('foo', ['bar', 2]), ('bar', [{}])],
+        )
+        self.assertListEqual(list(data_object.errors.keys), ['foo', 'bar'])
+        self.assertListEqual(list(data_object.errors.values), ['bar', 2, {}])
+        self.assertListEqual(list(data_object.errors), [('foo', 'bar'), ('foo', 2), ('bar', {})])
